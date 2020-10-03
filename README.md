@@ -33,7 +33,7 @@ $nrm = Norm::init([
 ]);
 ```
 
-##### Insert single record/document:
+#### Insert single record/document:
 ```php
 // return ID of new item or 0 on fail
 $newID = $nrm("mongo")->users->add([
@@ -42,7 +42,7 @@ $newID = $nrm("mongo")->users->add([
 ]);
 ```
 
-##### Get single record(document) by id:
+#### Get single record(document) by id:
 ```php
 $assocArray = $nrm->users->get(1234);
 ```
@@ -51,7 +51,7 @@ or
 $assocArray = $nrm("mongo2")->products->get('5f7771bb05f3b512a43ea6b2')
 ```
 
-##### Update records(documents):
+#### Update records(documents):
 ```php
 $affectedRows = $nrm->users->edit(1234,[  // by id
 	'age'=>21
@@ -71,7 +71,7 @@ $affectedRows = $nrm->users->edit(
 );
 ```
 
-##### Delete(Remove) records(documents):
+#### Delete(Remove) records(documents):
 ```php
 $affectedRows = $nrm->users->kill(1234);
 ```
@@ -86,7 +86,7 @@ $affectedRows = $nrm->users->kill([
 	'age'=>21,
 ]);
 ```
-##### Select/Find records(documents):
+#### Select/Find records(documents):
 ```php
 $generator = $nrm->users->find([
 	'name'=>'Ivan',
