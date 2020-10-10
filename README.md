@@ -24,12 +24,11 @@ $nrm = new Norm("driver=mongo;host=127.0.0.1;database=norm");
 or
 ```php
 $nrm = Norm::init([
-	"driver=mysql;host=127.0.0.1;user=mysql;password=mysql;database=norm", // alias: `default`
-	"driver=mysql;host=127.0.0.2;user=mysql;password=mysql;database=norm2", // alias: `mysql2`
-	"driver=mongo;host=127.0.0.1;database=norm", // alias: `mongo`
-	"driver=mysql;host=127.0.0.3;user=mysql;password=mysql;database=norm3", // alias: `mysql3`
-	"driver=mongo;host=127.0.0.2;database=norm2", // alias: `mongo2`
-	"driver=mongo;host=127.0.0.3;database=norm3", // alias: `mongo3`
+	"driver=mysql;host=127.0.0.1;user=mysql;password=mysql;database=norm", // name: `norm` (first-default)
+	"driver=mysql;host=127.0.0.2;user=mysql;password=mysql;database=norm", // name: `norm_mysql`
+	"driver=mongo;host=127.0.0.1;database=norm", // name: `norm_mongo`
+	"name=mybase;driver=mongo;host=127.0.0.2;database=norm2", // name: `mybase`
+	"driver=mongo;host=127.0.0.3;database=test", // name: `test`
 ]);
 ```
 
@@ -38,7 +37,7 @@ $nrm = Norm::init([
 // return ID of new item or 0 on fail
 $newID = $nrm("mongo")->users->add([
 	'name'=>'Ivan',
-	'age'->'20'
+	'age'=>'20'
 ]);
 ```
 
@@ -98,3 +97,23 @@ foreach($generator as $item){
 }
 ```
 
+#### Dereferencing(Cached MongoDB DBRef resolving):
+```php
+$generator = $nrm("mongo")->catalog->find([],[
+		'dereferencing'=>100, // 0=disable; 1=oneByOne(very slow); >1=dereferencing pageSize
+]);
+```
+
+#### Left joining for mysql(output has dereferenced form):
+```php
+$generator = $nrm->sales([],[
+		"product"=>"products.id",
+		"seller"=>"users.id",
+		"client"=>"users", // id by default
+])->find([
+		'sum >'=>10, // sales.sum
+		'seller.name LIKE%'=>'Joh',
+		'seller.id NOTIN'=>[101,102],
+		'client.x IN'=>'SELECT x FROM users', // nested queries is plan
+]);
+```
