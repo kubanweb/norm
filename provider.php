@@ -21,12 +21,12 @@ class Provider{
 	}
 	
 	function __get($tableName){
-		return new Table($this->driver,$tableName,"*");
+		return new Table($this->driver,$tableName,[]);
 	}
 	
 	
 	function __call($tableName,$args){
-		return new Table($this->driver,$tableName,$args);
+		return new Table($this->driver,$tableName,$args[0]);
 	}
 	
 	function _exec($command,array $data=[]){
@@ -37,6 +37,10 @@ class Provider{
 		return $this->driver->_query($query,$data);
 	}
 	
+	
+	function index(){
+		return $this->driver->index();
+	}
 	
 	
 	

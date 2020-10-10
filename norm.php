@@ -9,7 +9,7 @@ class Norm{
 	private static $instance=null;
 	private $dbconfig=[];
 	private $providers=[];
-	private $defaultProvider="main";
+	private $defaultProvider="";
 
 	function __construct($dbConfig){
 		if (is_null(self::$instance)){
@@ -40,20 +40,17 @@ class Norm{
 			if (isset($cfg['driver'])){
 				$name = strtolower(trim($cfg['name']??""));
 				if ($name==""){
-					$names[$cfg['driver']]++;
-					if ($names[$cfg['driver']]==1){
-						$name = $cfg['driver'];
-					}else{
-						$name = $cfg['driver'].$names[$cfg['driver']];
+					$name = strtolower(trim($cfg['database']??""));
+					if (isset($this->dbconfig[$name])){
+						$name .= "_".$cfg['driver'];
 					}
 				}
+				
 				$this->dbconfig[$name] = $cfg;
 			}
 		}
 		
-		if (!isset($this->dbconfig['main'])){
-			$this->defaultProvider = array_key_first($this->dbconfig);
-		}
+		$this->defaultProvider = array_key_first($this->dbconfig);
 	}
 	
 	
@@ -67,7 +64,7 @@ class Norm{
 	
 	function __call($tableName,$args){ // $nrm->users("id","name","COUNT(*)");
 		if (count($args)==0){
-			$args="*";
+			$args[0]="*";
 		}
 		return $this->db($this->defaultProvider)->$tableName($args);
 	}
@@ -82,6 +79,18 @@ class Norm{
 		}
 		
 		return $this->providers[$dbName];
+	}
+	
+	function index($dbName=""){
+		if ($dbName==""){
+			$dbName = $this->defaultProvider;
+		}
+		
+		return $this->db($dbName)->index();
+	}
+	
+	function __toString(){
+		return implode(",",array_keys($this->dbconfig));
 	}
 	
 	
