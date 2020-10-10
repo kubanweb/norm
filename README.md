@@ -100,20 +100,20 @@ foreach($generator as $item){
 #### Dereferencing(Cached MongoDB DBRef resolving):
 ```php
 $generator = $nrm("mongo")->catalog->find([],[
-		'dereferencing'=>100, // 0=disable; 1=oneByOne(very slow); >1=dereferencing pageSize
+	'dereferencing'=>100, // 0=disable; 1=oneByOne(very slow); >1=dereferencing pageSize
 ]);
 ```
 
 #### Left joining for mysql(output has dereferenced form):
 ```php
 $generator = $nrm->sales([],[
-		"product"=>"products.id",
-		"seller"=>"users.id",
-		"client"=>"users", // id by default
+	"product"=>"products.id",
+	"seller"=>"users.id",
+	"client"=>"users", // id by default
 ])->find([
-		'sum >'=>10, // sales.sum
-		'seller.name LIKE%'=>'Joh',
-		'seller.id NOTIN'=>[101,102],
-		'client.x IN'=>'SELECT x FROM users', // nested queries is plan
+	'sum >'=>10, // sales.sum
+	'seller.name LIKE%'=>'Joh',
+	'seller.id NOTIN'=>[101,102],
+	'client.x IN'=>'SELECT x FROM users', // nested queries is plan
 ]);
 ```
